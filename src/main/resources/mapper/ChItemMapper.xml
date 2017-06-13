@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sic.mapper.ChItemMapper">
+  <resultMap id="BaseResultMap" type="com.sic.entity.ChItem">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CH_ITEM_ID" jdbcType="VARCHAR" property="chItemId" />
+    <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
+    <result column="TYPE" jdbcType="DECIMAL" property="type" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="CHOICE" jdbcType="VARCHAR" property="choice" />
+    <result column="ITEM_REQUIREMENT_ID" jdbcType="VARCHAR" property="itemRequirementId" />
+    <result column="VISIBLE_LEVEL" jdbcType="DECIMAL" property="visibleLevel" />
+    <result column="EDIT_LEVEL" jdbcType="DECIMAL" property="editLevel" />
+    <result column="VISIBLE_FLAG" jdbcType="VARCHAR" property="visibleFlag" />
+    <result column="NEW_FLAG" jdbcType="VARCHAR" property="newFlag" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_OFFICE_ID" jdbcType="VARCHAR" property="createOfficeId" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="UPDATE_OFFICE_ID" jdbcType="VARCHAR" property="updateOfficeId" />
+    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+    <result column="DEL_FLAG" jdbcType="VARCHAR" property="delFlag" />
+    <result column="SYSTEM_FLAG" jdbcType="VARCHAR" property="systemFlag" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="REMARK_LEVEL" jdbcType="DECIMAL" property="remarkLevel" />
+    <result column="FILE_LEVEL" jdbcType="DECIMAL" property="fileLevel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, CH_ITEM_ID, PARENT_ID, TYPE, NAME, CONTENT, CHOICE, ITEM_REQUIREMENT_ID, VISIBLE_LEVEL, 
+    EDIT_LEVEL, VISIBLE_FLAG, NEW_FLAG, CREATE_BY, CREATE_OFFICE_ID, CREATE_DATE, UPDATE_BY, 
+    UPDATE_OFFICE_ID, UPDATE_DATE, REMARKS, DEL_FLAG, SYSTEM_FLAG, STATUS, REMARK_LEVEL, 
+    FILE_LEVEL
+  </sql>
+  <select id="select" parameterType="com.sic.entity.ChTaskRecord" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from CH_ITEM
+    where ID IN (SELECT item_id FROM CH_FORM_ITEM WHERE "ID" in
+    (SELECT FORM_item_id FROM CH_ITEM_RECORD WHERE TASK_RECORD_ID in (select 
+    ID
+    from CH_TASK_RECORD
+    where OFFICE_ID=#{officeId,jdbcType=VARCHAR}
+     AND IS_SYNC='0' 
+     and STATUS=#{status,jdbcType=VARCHAR} 
+     and PROC_INS_ID  is not null))) 
+  </select>
+  <insert id="insert" parameterType="com.sic.entity.ChItem">
+    insert into CH_ITEM (ID, CH_ITEM_ID, PARENT_ID, 
+      TYPE, NAME, CONTENT, CHOICE, 
+      ITEM_REQUIREMENT_ID, VISIBLE_LEVEL, EDIT_LEVEL, 
+      VISIBLE_FLAG, NEW_FLAG, CREATE_BY, 
+      CREATE_OFFICE_ID, CREATE_DATE, UPDATE_BY, 
+      UPDATE_OFFICE_ID, UPDATE_DATE, REMARKS, 
+      DEL_FLAG, SYSTEM_FLAG, STATUS, 
+      REMARK_LEVEL, FILE_LEVEL)
+    values (#{id,jdbcType=VARCHAR}, #{chItemId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{type,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{choice,jdbcType=VARCHAR}, 
+      #{itemRequirementId,jdbcType=VARCHAR}, #{visibleLevel,jdbcType=DECIMAL}, #{editLevel,jdbcType=DECIMAL}, 
+      #{visibleFlag,jdbcType=VARCHAR}, #{newFlag,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createOfficeId,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateOfficeId,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=VARCHAR}, #{systemFlag,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, 
+      #{remarkLevel,jdbcType=DECIMAL}, #{fileLevel,jdbcType=DECIMAL})
+  </insert>
+ 
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from CH_ITEM
+    where ID=#{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByFormId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+	T1. ID,
+	T1.CH_ITEM_ID,
+	T1.PARENT_ID,
+	T1. TYPE,
+	T1. NAME,
+	T1. CONTENT,
+	T1.CHOICE,
+	T1.ITEM_REQUIREMENT_ID,
+	T1.VISIBLE_LEVEL,
+	T1.EDIT_LEVEL,
+	T1.VISIBLE_FLAG,
+	T1.NEW_FLAG,
+	T1.CREATE_BY,
+	T1.CREATE_OFFICE_ID,
+	T1.CREATE_DATE,
+	T1.UPDATE_BY,
+	T1.UPDATE_OFFICE_ID,
+	T1.UPDATE_DATE,
+	T1.REMARKS,
+	T1.DEL_FLAG,
+	T1.SYSTEM_FLAG,
+	T1.STATUS,
+	T1.REMARK_LEVEL,
+	T1.FILE_LEVEL
+FROM
+	CH_ITEM T1
+LEFT JOIN CH_FORM_ITEM T2 ON T1. ID = T2.ITEM_ID
+WHERE T2.FORM_ID = #{formId,jdbcType=VARCHAR}
+</select>
+</mapper>

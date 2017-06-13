@@ -1,0 +1,16 @@
+#Spring:
+#
+##配置uri接口
+#service.apis:
+#    #区县接收下发任务接口
+#  - id: insertCheckRecord
+#    url: http://localhost:8080/insertCheckRecord
+#    method: POST
+#  #区县接收更新接口
+#  - id: updateCheckRecord
+#    url: http://localhost:7001/apiExchange/updateCheckRecord
+#    method: POST
+#    #流程启动接口
+#   - id: startSecurityTask
+#     url: http://localhost:8080/updateCheckRecord
+#     method: POST

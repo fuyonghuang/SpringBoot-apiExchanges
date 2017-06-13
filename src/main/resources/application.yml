@@ -1,0 +1,63 @@
+spring:
+
+  # 当前环境 dev 开发，prod 生产
+  profiles.active: dev
+  # mybatis配置
+mybatis:
+  # 配置映射类所在包名
+  type-aliases-package: com.**.mapper
+  # 配置mapper xml文件所在路径，这里是一个数组
+  mapper-locations:
+    - classpath:mapper/*.xml  
+#配置uri接口
+service.apis:
+    #区县接收下发任务接口
+  - id: insertCheckRecord
+    url: http://localhost:8080/insertCheckRecord
+    method: POST
+  #区县接收更新接口
+  - id: updateCheckRecord
+    url: http://localhost:7001/apiExchange/insertCheckRecord
+    method: POST
+    #流程启动接口
+  - id: startSecurityTask
+  #  url: http://192.168.0.46:7001/teenagers/flow/startSecurityTask
+    url: http://chenyongtu.vicp.net/teenagers/flow/startSecurityTask
+    method: POST
+---
+#开发环境
+spring:
+  profiles: dev  
+    # 数据库配置
+  datasource:
+    url: jdbc:oracle:thin:@192.168.0.198:1521:prod
+    username: teenagers_area
+    password: oracle
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+      # 控制台显示颜色
+  output.ansi.enabled: always
+#  jpa.show-sql: true
+
+---  
+#生产环境
+spring:
+  profiles: prod  
+  datasource:
+    url: jdbc:oracle:thin:@192.168.0.198:1521:prod
+    username: teenagers
+    password: oracle
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+   # 控制台显示颜色
+  output.ansi.enabled: always
+  jpa.show-sql: true   
+# 日志配置 
+#logging:
+##日志位置
+#  file: logs/log.log
+#  pattern.file: "%d %-5level [%thread] %logger{0} : %msg%n"
+#  level: debug
+#  
+#logging.level:
+#    org.springframework.web: debug
+#    org.mybatis: debug
+#    com.business.web: debug 

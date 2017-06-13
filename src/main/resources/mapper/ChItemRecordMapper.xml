@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sic.mapper.ChItemRecordMapper">
+  <resultMap id="BaseResultMap" type="com.sic.entity.ChItemRecord">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="TASK_RECORD_ID" jdbcType="VARCHAR" property="taskRecordId" />
+    <result column="FORM_ITEM_ID" jdbcType="VARCHAR" property="formItemId" />
+    <result column="CONTENT_INT" jdbcType="DECIMAL" property="contentInt" />
+    <result column="CONTENT_STRING" jdbcType="VARCHAR" property="contentString" />
+    <result column="CONTENT_TIMESTAMP" jdbcType="TIMESTAMP" property="contentTimestamp" />
+    <result column="PASS_FLAG" jdbcType="VARCHAR" property="passFlag" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="FILE_IDS" jdbcType="VARCHAR" property="fileIds" />
+    <collection property="ftpFileList" ofType="com.sic.entity.FtpFileSync">
+		<id column="FFID" jdbcType="VARCHAR" property="id" />
+	    <result column="BATCH_ID" jdbcType="VARCHAR" property="batchId" />
+	    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+	    <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
+	    <result column="REMOTE_PATH" jdbcType="VARCHAR" property="remotePath" />
+	    <result column="ICON" jdbcType="VARCHAR" property="icon" />
+	    <result column="THUMBNAIL" jdbcType="VARCHAR" property="thumbnail" />
+	    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+	    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+	    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+	    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+	    <result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+	    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+	    <result column="DEL_FLAG" jdbcType="VARCHAR" property="delFlag" />
+	    <result column="IS_SYNC" jdbcType="CHAR" property="isSync" />
+	    <result column="SYNC_AREA" jdbcType="CHAR" property="syncArea" />
+	</collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, TASK_RECORD_ID, FORM_ITEM_ID, CONTENT_INT, CONTENT_STRING, CONTENT_TIMESTAMP, 
+    PASS_FLAG, REMARKS, CONTENT, FILE_IDS
+  </sql>
+  <select id="select" parameterType="com.sic.entity.ChTaskRecord" resultMap="BaseResultMap">
+    select cir.*,
+    ff.ID as FFID, ff.BATCH_ID, ff.FILE_NAME, ff.FILE_TYPE, ff.REMOTE_PATH, ff.ICON, ff.THUMBNAIL, ff.STATUS, ff.CREATE_BY, 
+    ff.CREATE_DATE, ff.UPDATE_BY, ff.UPDATE_DATE, ff.REMARKS, ff.DEL_FLAG 
+    from CH_ITEM_RECORD cir
+    left join FTP_FILE ff on cir.FILE_IDS=ff.BATCH_ID
+    where TASK_RECORD_ID in (select 
+    ID
+    from CH_TASK_RECORD
+    where IS_SYNC='0' and IS_CITY='1' 
+	<if test="officeId != null">
+	and OFFICE_ID=#{officeId,jdbcType=VARCHAR}
+	</if>
+     and STATUS=#{status,jdbcType=VARCHAR} 
+     and PROC_INS_ID  is not null)
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from CH_ITEM_RECORD
+    WHERE ID=#{id,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert" parameterType="com.sic.entity.ChItemRecord">
+    insert into CH_ITEM_RECORD (ID, TASK_RECORD_ID, FORM_ITEM_ID, 
+      CONTENT_INT, CONTENT_STRING, CONTENT_TIMESTAMP, 
+      PASS_FLAG, REMARKS, CONTENT, 
+      FILE_IDS)
+    values (#{id,jdbcType=VARCHAR}, #{taskRecordId,jdbcType=VARCHAR}, #{formItemId,jdbcType=VARCHAR}, 
+      #{contentInt,jdbcType=DECIMAL}, #{contentString,jdbcType=VARCHAR}, #{contentTimestamp,jdbcType=TIMESTAMP}, 
+      #{passFlag,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{fileIds,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectByTaskRecordId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  CH_ITEM_RECORD WHERE
+    TASK_RECORD_ID =#{taskRecordId,jdbcType=VARCHAR}
+
+  </select>
+
+  <update id="update" parameterType="com.sic.entity.ChItemRecord">
+    update CH_ITEM_RECORD
+    set TASK_RECORD_ID = #{taskRecordId,jdbcType=VARCHAR},
+      FORM_ITEM_ID = #{formItemId,jdbcType=VARCHAR},
+      CONTENT_INT = #{contentInt,jdbcType=DECIMAL},
+      CONTENT_STRING = #{contentString,jdbcType=VARCHAR},
+      CONTENT_TIMESTAMP = #{contentTimestamp,jdbcType=TIMESTAMP},
+      PASS_FLAG = #{passFlag,jdbcType=VARCHAR},
+      REMARKS = #{remarks,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      FILE_IDS = #{fileIds,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+ 
+</mapper>

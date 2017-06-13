@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sic.mapper.SysOfficeMapper">
+  <resultMap id="BaseResultMap" type="com.sic.entity.SysOffice">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SORT" jdbcType="DECIMAL" property="sort" />
+    <result column="AREA_ID" jdbcType="VARCHAR" property="areaId" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="TYPE" jdbcType="CHAR" property="type" />
+    <result column="GRADE" jdbcType="CHAR" property="grade" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="ZIP_CODE" jdbcType="VARCHAR" property="zipCode" />
+    <result column="MASTER" jdbcType="VARCHAR" property="master" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="FAX" jdbcType="VARCHAR" property="fax" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="USEABLE" jdbcType="VARCHAR" property="useable" />
+    <result column="PRIMARY_PERSON" jdbcType="VARCHAR" property="primaryPerson" />
+    <result column="DEPUTY_PERSON" jdbcType="VARCHAR" property="deputyPerson" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
+    <result column="UPDATE_BY" jdbcType="VARCHAR" property="updateBy" />
+    <result column="UPDATE_DATE" jdbcType="DATE" property="updateDate" />
+    <result column="REMARKS" jdbcType="VARCHAR" property="remarks" />
+    <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag" />
+    <result column="SIMX" jdbcType="FLOAT" property="simx" />
+    <result column="SIMY" jdbcType="FLOAT" property="simy" />
+    <result column="IS_PRIVATE" jdbcType="CHAR" property="isPrivate" />
+    <result column="IMGFILEIDS" jdbcType="VARCHAR" property="imgfileids" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.sic.entity.SysOffice">
+    <result column="PARENT_IDS" jdbcType="CLOB" property="parentIds" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, PARENT_ID, NAME, SORT, AREA_ID, CODE, TYPE, GRADE, ADDRESS, ZIP_CODE, MASTER, 
+    PHONE, FAX, EMAIL, USEABLE, PRIMARY_PERSON, DEPUTY_PERSON, CREATE_BY, CREATE_DATE, 
+    UPDATE_BY, UPDATE_DATE, REMARKS, DEL_FLAG, SIMX, SIMY, IS_PRIVATE, IMGFILEIDS
+  </sql>
+  <select id="selectByEntity" parameterType="com.sic.entity.SysOffice" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_OFFICE
+    where AREA_ID = #{areaId,jdbcType=VARCHAR}
+  </select>  
+</mapper>
